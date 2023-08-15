@@ -4,6 +4,8 @@ const username = "EdynLost";
 const repoList = document.querySelector(".repo-list");
 const allReposContainer = document.querySelector(".repos");
 const repoData = document.querySelector(".repo-data");
+const viewReposButton = document.querySelector(".view-repos");
+const filterInput = document.querySelector(".filter-repos");
 
 const gitUserInfo = async function() {
     const userInfo = await fetch(`https://api.github.com/users/${username}`);
@@ -37,6 +39,7 @@ const gitRepos = async function () {
   };
   const displayRepos = function (repos) {
     for (const repo of repos) {
+        filterInput.classList.remove("hide");
       const repoItem = document.createElement("li");
       repoItem.classList.add("repo");
       repoItem.innerHTML = `<h3>${repo.name}</h3>`;
@@ -64,6 +67,7 @@ const gitRepos = async function () {
   const displayRepoInfo = function (repoInfo, languages) {
     repoData.innerHTML = "";
     repoData.classList.remove("hide");
+    viewReposButton.classList.remove("hide");
   allReposContainer.classList.add("hide");
     const div = document.createElement("div");
     div.innerHTML = `<h3>Name: ${repoInfo.name}</h3>
@@ -73,3 +77,21 @@ const gitRepos = async function () {
     <a class="visit" href="${repoInfo.html_url}" target="_blank" rel="noreferrer noopener">View Repo on GitHub!</a>`;
     repoData.append(div);
   };
+viewReposButton.addEventListener("click", function() {
+    allReposContainer.classList.remove("hide");
+    viewReposButton.classList.add("hide");
+});
+filterInput.addEventListener("input", function (e) {
+  const searchText = e.target.value;
+  const repos = document.querySelectorAll(".repo");
+  const searchLowerText = searchText.toLowerCase();
+
+  for (const repo of repos) {
+    const repoLowerText = repo.innerText.toLowerCase();
+    if (repoLowerText.includes(searchLowerText)) {
+      repo.classList.remove("hide");
+    } else {
+      repo.classList.add("hide");
+    }
+  }
+});
